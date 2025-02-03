@@ -35,3 +35,9 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# PyCharm generated files
+.idea
+.python-version
+tests/.python-version
+tests/__pycache__/
