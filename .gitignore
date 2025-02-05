@@ -41,3 +41,7 @@ Thumbs.db
 .python-version
 tests/.python-version
 tests/__pycache__/
+
+# Terraform setup files
+tf/.terraform
+tf/.terraform*
