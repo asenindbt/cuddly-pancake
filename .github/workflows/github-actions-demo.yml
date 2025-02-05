@@ -36,28 +36,29 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ "3.10", "3.11", "3.12", "3.13" ]
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
           pytest ${{ github.workspace }}/tests --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
 
-  terraform:
+
+  check-code:
     runs-on: ubuntu-latest
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    # Set the working directory to vnet for the config files
+    defaults:
+        run:
+          shell: bash
+          working-directory: ./tf
 
     steps:
-      - name: Run Terraform init
-        run: |
-          terraform -chdir="./tf" init
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "5.85.0"
+      - name: Terraform init
+        id: init
+        run: terraform init
